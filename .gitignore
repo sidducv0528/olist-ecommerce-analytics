@@ -1,0 +1,22 @@
+﻿# Data files (download from Kaggle)
+data/
+*.csv
+*.joblib
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Build/helper scripts (not part of submission)
+part_*.py
+notebook_script.py
+build_notebook.py
+final_check.py
+check_nb.py
+test_app_pages.py
+
+# Stray notebooks
+Untitled-1.ipynb
