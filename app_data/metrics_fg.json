@@ -1,0 +1,98 @@
+{
+  "avg_review_score": 4.155716524320005,
+  "low_review_pct": 12.727947467708518,
+  "late_pct": 6.764460296679621,
+  "avg_delivery_days": 12.099537108629987,
+  "median_delivery_days": 10.0,
+  "peak_month": "2017-11",
+  "peak_day": "Mon",
+  "peak_hour": 16,
+  "top_category": "health_beauty",
+  "top_category_rev": 1200598.128,
+  "worst_state": "RR",
+  "worst_days": 28.975609756097562,
+  "best_state": "SP",
+  "best_days": 8.301707406952463,
+  "top_rev_state": "SP",
+  "top_rev_state_rev": 4919622.768,
+  "late_mean_score": 2.271025120923701,
+  "ontime_mean_score": 4.289999110636784,
+  "mannwhitney_u": 104415351.0,
+  "mannwhitney_p": 0.0,
+  "effect_r": 0.6377626292768324,
+  "chi2": 14733.361704351459,
+  "chi2_p": 0.0,
+  "cramers_v": 0.3897170338621738,
+  "corr_late_review": -0.39151559669651204,
+  "med_fr_low": 0.231212831140746,
+  "med_fr_high": 0.2227461065866552,
+  "dominant_payment": "credit_card",
+  "dominant_payment_pct": 76.62024389992474,
+  "best_k": 3,
+  "best_silhouette": 0.4697954398821943,
+  "seg_map": {
+    "2": "High-Value Buyers",
+    "0": "Recent Buyers",
+    "1": "Lapsed Buyers"
+  },
+  "cluster_sizes": {
+    "High-Value Buyers": 4741,
+    "Recent Buyers": 52436,
+    "Lapsed Buyers": 39301
+  },
+  "num_customers": 96478,
+  "rfm_snapshot": "2018-08-30",
+  "best_model_name": "Random Forest",
+  "best_params": {
+    "n_estimators": "200",
+    "min_samples_leaf": "4",
+    "max_depth": "None"
+  },
+  "tuned_metrics": {
+    "accuracy": 0.8480927835051546,
+    "precision": 0.4199061662198391,
+    "recall": 0.507492912110166,
+    "f1": 0.4595635430038511,
+    "roc_auc": 0.7663846055269381
+  },
+  "model_comparison": {
+    "Logistic Regression": {
+      "accuracy": 0.8184536082474226,
+      "precision": 0.35850577801666217,
+      "recall": 0.5402997164844067,
+      "f1": 0.43101777059773827,
+      "roc_auc": 0.7586394246545056
+    },
+    "Random Forest": {
+      "accuracy": 0.8405154639175257,
+      "precision": 0.40138845061533607,
+      "recall": 0.5151883353584447,
+      "f1": 0.4512238382405108,
+      "roc_auc": 0.7568016818268339
+    },
+    "XGBoost": {
+      "accuracy": 0.820979381443299,
+      "precision": 0.36109573879358053,
+      "recall": 0.528554070473876,
+      "f1": 0.42906460627979615,
+      "roc_auc": 0.7388850737390048
+    }
+  },
+  "confusion_matrix": [
+    [
+      15200,
+      1731
+    ],
+    [
+      1216,
+      1253
+    ]
+  ],
+  "top_feature": "estimated_vs_actual_delay_days",
+  "scale_pos_weight": 6.86,
+  "ml_train_size": 77599,
+  "ml_test_size": 19400,
+  "tune_sample_size": 40000,
+  "total_revenue": 12718380.006,
+  "total_orders": 97007
+}

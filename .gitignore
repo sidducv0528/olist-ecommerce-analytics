@@ -20,3 +20,8 @@ test_app_pages.py
 
 # Stray notebooks
 Untitled-1.ipynb
+!app_data/best_model.joblib
+check_*.py
+final_*.py
+prepare_app_data.py
+save_app_model.py

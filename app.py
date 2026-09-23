@@ -12,6 +12,10 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import json, os, joblib
+from pathlib import Path
+
+APP_DIR  = Path(__file__).parent
+DATA_DIR = APP_DIR / "app_data"
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -41,23 +45,23 @@ st.markdown("""
 # ── Data loading (cached) ─────────────────────────────────────────────────────
 @st.cache_data(show_spinner="Loading data …")
 def load_data():
-    # Load full delivered dataset — no sampling so KPIs match the report (97,007 orders)
-    df = pd.read_csv('data/delivered.csv',
+    # Load delivered dataset from app_data/ (compressed, 97,007 orders)
+    df = pd.read_csv(DATA_DIR / "delivered_app.csv.gz",
                      parse_dates=['order_purchase_timestamp'])
     return df
 
 @st.cache_data(show_spinner="Loading RFM …")
 def load_rfm():
-    return pd.read_csv('data/rfm_segments.csv')
+    return pd.read_csv(DATA_DIR / "rfm_segments.csv.gz")
 
 @st.cache_data(show_spinner="Loading metrics …")
 def load_metrics():
-    with open('data/metrics_fg.json') as f:
+    with open(DATA_DIR / "metrics_fg.json") as f:
         return json.load(f)
 
 @st.cache_resource(show_spinner="Loading model …")
 def load_model():
-    return joblib.load('models/best_model.joblib')
+    return joblib.load(DATA_DIR / "best_model.joblib")
 
 # ── Safe loads ────────────────────────────────────────────────────────────────
 try:
