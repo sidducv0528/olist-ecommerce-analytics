@@ -1,240 +1,382 @@
-# Olist Brazilian E-Commerce: Customer, Delivery & Review Analytics with ML
+<div align="center">
 
-> **AICTE | IBM SkillsBuild Data Analytics with AI Internship 2026 — Final Project**  
-> **Author:** Siddu Varikuppala | **Programme:** BharatCares
+<img src="assets/banner.png" alt="Olist E-Commerce Analytics banner" width="100%">
 
----
+<br>
 
-## Overview
+[![Live Demo](https://img.shields.io/badge/🚀_LIVE_DEMO-Open_the_App-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://bank-deposit-prediction-t7rvzukgnrhlewkzl46dyy.streamlit.app/)
+[![Notebook](https://img.shields.io/badge/📓_Notebook-View_Analysis-F37626?style=for-the-badge&logo=jupyter&logoColor=white)](Siddu_Varikuppala_OlistEcommerceAnalysis.ipynb)
+[![Dataset](https://img.shields.io/badge/📦_Dataset-Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 
-End-to-end data analytics and machine learning project on the
-[Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
-The project covers data cleaning, EDA, statistical testing, customer segmentation (RFM + KMeans),
-and a **post-delivery** machine learning model that predicts whether a delivered order will receive
-a low review score (≤ 2), using delivery outcome features and order context — no review text or
-score is used as a feature.
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)
+![pandas](https://img.shields.io/badge/pandas-150458?style=flat-square&logo=pandas&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat-square&logo=scikitlearn&logoColor=white)
+![Plotly](https://img.shields.io/badge/Plotly-3F4F75?style=flat-square&logo=plotly&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
+![Status](https://img.shields.io/badge/Status-Completed-brightgreen?style=flat-square)
 
----
+**End-to-end data analytics and machine learning on 97,007 real e-commerce orders**
+<br>
+*AICTE | IBM SkillsBuild Data Analytics with AI Internship 2026, in association with BharatCares*
 
-## Problem Statement
-
-What factors drive low customer review scores on the Olist platform, and can we identify
-delivered orders at high risk of a bad review so operations teams can intervene?
-Note: this is a **post-delivery model** — features such as actual delivery days and delay vs
-estimate are only available after the order arrives.
+</div>
 
 ---
 
-## Dataset
+## 👀 Live App Preview
 
-| Detail | Value |
-|--------|-------|
-| Source | [Kaggle – Olist Brazilian E-Commerce](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) |
-| Coverage | September 2016 – August 2018 |
-| Files | 8 CSV files (geolocation skipped in analysis) |
-| Orders (raw) | 99,441 |
-| Delivered orders (used for analysis) | 97,007 |
+<div align="center">
 
-**⚠️ The CSV files are NOT included in this repository.**  
-Download from Kaggle and place in the `data/` folder:
-```
-data/
-  olist_orders_dataset.csv
-  olist_order_items_dataset.csv
-  olist_order_payments_dataset.csv
-  olist_order_reviews_dataset.csv
-  olist_customers_dataset.csv
-  olist_products_dataset.csv
-  olist_sellers_dataset.csv
-  olist_geolocation_dataset.csv
-  product_category_name_translation.csv
-```
+[![Streamlit dashboard preview: click to open the live app](assets/app_preview.png)](https://bank-deposit-prediction-t7rvzukgnrhlewkzl46dyy.streamlit.app/)
+
+**[👉 Click the image or here to open the live dashboard](https://bank-deposit-prediction-t7rvzukgnrhlewkzl46dyy.streamlit.app/)**
+<br>
+<sub>Free hosting: if the app has been idle, it may take about 30 seconds to wake up.</sub>
+
+</div>
 
 ---
 
-## Key Findings (Real Numbers from Code)
+## ⚡ TL;DR
 
-| Finding | Value |
-|---------|-------|
-| Total Revenue (delivered orders) | R$12,718,380 |
-| Total Delivered Orders | 97,007 |
-| Average Review Score | 4.16 / 5 |
-| Low-Review Rate (score ≤ 2) | 12.7% |
-| Late Delivery Rate | 6.8% |
-| Average Delivery Days | 12.1 days |
-| Peak Revenue Month | November 2017 (R$958,636) |
-| Top Revenue Category | health_beauty (R$1,200,598) |
-| Slowest State | RR – 29.0 days average |
-| Fastest State | SP – 8.3 days average |
-| Late deliveries avg review | 2.27 vs 4.29 on-time |
-| Mann-Whitney U p-value | p < 0.001 (effect r = 0.64, large) |
-| Chi-square (is_late × low_review) | p < 0.001, Cramér's V = 0.39 |
-| Dominant payment method | credit_card (76.6%) |
+<div align="center">
 
-### ML Model Results
+| 🧾 Orders | 💰 Revenue | ⭐ Avg. Review | 🚚 Late Deliveries | 🤖 Model ROC-AUC |
+|:---:|:---:|:---:|:---:|:---:|
+| **97,007** | **R$12.7M** | **4.16 / 5** | **6.8%** | **0.77** |
 
-| Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
-|-------|----------|-----------|--------|----|---------|
-| Logistic Regression | 0.8185 | 0.3585 | 0.5403 | 0.4310 | 0.7586 |
-| Random Forest | 0.8405 | 0.4014 | 0.5152 | 0.4512 | 0.7568 |
-| XGBoost | 0.8210 | 0.3611 | 0.5286 | 0.4291 | 0.7389 |
-| **Tuned Random Forest (FINAL)** | **0.8481** | **0.4199** | **0.5075** | **0.4596** | **0.7664** |
+</div>
 
-**Top feature:** `estimated_vs_actual_delay_days` (importance = 0.1820)
-
-> **Model scope note:** This is a post-delivery model. Performance is moderate
-> (F1 0.46, AUC 0.77) — use as a risk-prioritisation tool, not a hard classifier.
-
-### Customer Segments (KMeans k=3, silhouette=0.47)
-
-| Segment | Count | Avg Recency | Avg Monetary | Profile |
-|---------|-------|-------------|--------------|---------|
-| High-Value Buyers | 4,741 | 238d | R$689 | Highest spend, recent — priority retention |
-| Recent Buyers | 52,436 | 129d | R$103 | Most recently active, moderate spend |
-| Lapsed Buyers | 39,301 | 389d | R$103 | Dormant ~13 months — win-back campaigns |
-
-> Note: 96% of customers have exactly one order (frequency = 1), so segmentation is
-> driven by **Recency** and **Monetary value** only.
+> **Key finding:** late orders average **2.27 stars** vs **4.29 stars** for on-time orders (a large effect, r = 0.64, p < 0.001). The delay compared with the *promised* delivery date is the strongest predictor of a bad review.
 
 ---
 
-## Technologies Used
+## 📖 Table of Contents
 
-| Category | Tool |
-|----------|------|
-| Language | Python 3.11.9 |
-| Data | pandas 3.0.5, numpy 2.4.6 |
-| Visualisation | matplotlib 3.11.2, seaborn 0.13.2, plotly 6.9.0 |
-| Machine Learning | scikit-learn 1.9.0, xgboost 3.2.0 |
-| Explainability | shap 0.51.0 |
-| Statistics | scipy 1.17.1 |
-| App | streamlit 1.60.0 |
-| Report | python-docx 1.1.2 |
-| AI Coding Assistant | IBM Bob |
-
----
-
-## Project Structure
-
-```
-.
-├── data/
-│   ├── olist_*.csv                  # Raw CSVs (download from Kaggle)
-│   ├── cleaned_master.csv           # Generated by part_ae.py
-│   ├── delivered.csv                # Generated by part_ae.py
-│   ├── df_features.csv              # Generated by part_ae.py
-│   ├── rfm_segments.csv             # Generated by part_h.py
-│   └── metrics_fg.json             # All real metrics (generated)
-├── outputs/figures/                 # 18 PNG charts (generated)
-├── models/
-│   └── best_model.joblib           # Saved Random Forest pipeline
-├── Siddu_Varikuppala_OlistEcommerceAnalysis.ipynb   # Main notebook
-├── Siddu_Varikuppala_ProjectReport.docx             # Word report
-├── app.py                          # Streamlit dashboard
-├── build_notebook.py               # Assembles .ipynb from parts
-├── build_report.py                 # Generates .docx report
-├── part_ae.py                      # Notebook sections A–E (data + features)
-├── part_fg.py                      # Notebook sections F–G (EDA + stats)
-├── part_h.py                       # Notebook section H (RFM + clustering)
-├── part_i.py                       # Notebook section I (ML)
-├── requirements.txt                # Pinned library versions
-└── README.md
-```
+1. [Project Overview](#-project-overview)
+2. [Dataset](#-dataset)
+3. [Workflow](#-workflow)
+4. [Key Findings](#-key-findings)
+5. [Statistical Tests](#-statistical-tests)
+6. [Customer Segmentation](#-customer-segmentation)
+7. [Machine Learning Model](#-machine-learning-model)
+8. [Business Recommendations](#-business-recommendations)
+9. [Streamlit App](#-streamlit-app)
+10. [Tech Stack](#-tech-stack)
+11. [Project Structure](#-project-structure)
+12. [Setup & Run](#-setup--run)
+13. [Limitations](#-limitations)
+14. [Author](#-author)
 
 ---
 
-## Setup Instructions
+## 🎯 Project Overview
 
-### Python Version
-Python 3.11.x recommended.
+Olist is a Brazilian marketplace that connects small sellers to large online stores. This project analyses its public order data from start to finish to answer four questions:
 
-### 1. Create a Virtual Environment
-```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-```
+1. How do sales, customers and delivery performance vary across time, products and states?
+2. Does late delivery lead to worse customer reviews?
+3. What kinds of customers does the business have (RFM segmentation)?
+4. Can we flag delivered orders likely to get a low review (1 to 2 stars) so the business can follow up?
 
-### 2. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Download Data
-Download from [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
-and place all CSV files into the `data/` folder.
+It covers data auditing, cleaning, merging nine tables, feature engineering, EDA, hypothesis testing, clustering, a classification model, and an interactive Streamlit dashboard.
 
 ---
 
-## How to Run
+## 🗂 Dataset
 
-### Option A — Run the Analysis Scripts (generates all outputs)
-```bash
-# Part A–E: Load, clean, feature engineer (~22s)
-python part_ae.py
+- **Name:** Brazilian E-Commerce Public Dataset by Olist
+- **Source:** [Kaggle: olistbr/brazilian-ecommerce](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
+- **Size:** about 100k orders from 2016 to 2018, across 9 linked tables
 
-# Part F–G: EDA visualisations + statistical tests (~7s)
-python part_fg.py
+<details>
+<summary><b>Show the 9 tables</b></summary>
 
-# Part H: RFM + KMeans segmentation (~33s)
-python part_h.py
+<br>
 
-# Part I: Machine learning models (~30s + SHAP ~8min)
-python part_i.py
+| Table | Contents |
+|---|---|
+| `orders` | Order status and timestamps |
+| `order_items` | Products, prices and freight per order |
+| `order_payments` | Payment type, installments and value |
+| `order_reviews` | Review scores and comments |
+| `customers` | Customer location |
+| `sellers` | Seller location |
+| `products` | Product category and attributes |
+| `product_category_name_translation` | Portuguese to English category names |
+| `geolocation` | Zip code coordinates (not used in the analysis) |
 
-# Assemble notebook
-python build_notebook.py
+</details>
 
-# Generate Word report
-python build_report.py
+> The raw CSV files are **not included** in this repository. See [Setup & Run](#-setup--run) to download them.
+
+---
+
+## 🔄 Workflow
+
+```mermaid
+flowchart LR
+    A[Raw CSVs<br/>9 tables] --> B[Data audit]
+    B --> C[Cleaning]
+    C --> D[Merge<br/>1 row per order]
+    D --> E[Feature<br/>engineering]
+    E --> F[EDA]
+    F --> G[Statistical<br/>tests]
+    G --> H[RFM +<br/>KMeans]
+    H --> I[ML model<br/>Random Forest]
+    I --> J[Insights &<br/>Streamlit app]
 ```
 
-### Option B — Open the Notebook
-```bash
-jupyter notebook Siddu_Varikuppala_OlistEcommerceAnalysis.ipynb
-```
-Run all cells top-to-bottom (Restart & Run All). The notebook calls the same logic
-as the part scripts; all generated outputs (figures, model, CSVs) must already exist
-in the correct folders from Option A above.
+<details>
+<summary><b>Cleaning and feature engineering details</b></summary>
 
-### Streamlit Dashboard
+<br>
+
+**Cleaning:** duplicate removal, keeping the latest review per order, date parsing, missing-value handling with a justification per column, category translation, outlier handling, keeping delivered orders only, and aggregating items and payments to order level *before* joining so rows are not multiplied.
+
+**Engineered features:** delivery days, delay versus the estimated delivery date, late flag, purchase month / weekday / hour, total price and freight, freight ratio, number of items, payment type and installments, product category, customer and seller state, and a low-review flag (score of 2 or below).
+
+</details>
+
+---
+
+## 🔎 Key Findings
+
+- **Scale:** 97,007 delivered orders generated R$12.7M in revenue.
+- **Seasonality:** revenue peaked in **November 2017** (R$958,636), consistent with Black Friday.
+- **Top category:** `health_beauty` led revenue at about R$1.2M.
+- **Geography:** São Paulo (SP) generated about R$4.9M and had the fastest delivery (**8.3 days**). Roraima (RR) was the slowest at **29.0 days**, about 3.5 times slower.
+- **Delivery:** average delivery took 12.1 days (median 10.0), and 6.8% of orders arrived late.
+- **Payments:** credit cards made up 76.6% of orders.
+- **Reviews:** the average score is 4.16, and 12.7% of orders got a low score (1 to 2).
+
+<div align="center">
+
+<img src="outputs/screenshots/app_charts.png" width="95%" alt="Exploratory charts: monthly revenue, top categories, delivery by state, late vs on-time reviews">
+
+<sub>Exploratory charts: monthly revenue and orders, top categories, delivery days by state, review score for late vs on-time orders.</sub>
+
+</div>
+
+---
+
+## 🧪 Statistical Tests
+
+| Test | Result |
+|---|---|
+| **Mann-Whitney U**: review scores of late vs on-time orders | Late mean **2.27** vs on-time mean **4.29**; p < 0.001; effect size r = **0.64** (large) |
+| **Chi-square + Cramér's V**: late delivery vs low review | Cramér's V = **0.39** (strong association) |
+
+**Interpretation:** late delivery is strongly linked to low reviews. This is an association in observational data, not proof that lateness alone causes a bad review.
+
+---
+
+## 👥 Customer Segmentation
+
+RFM (Recency, Frequency, Monetary) features clustered with KMeans. The silhouette score selected **k = 3** (silhouette = 0.47).
+
+| Segment | Customers | Avg. recency (days) | Avg. spend (R$) |
+|---|---:|---:|---:|
+| 💎 **High-Value Buyers** | 4,741 | 238 | 689 |
+| 🟢 **Recent Buyers** | 52,436 | 129 | 103 |
+| 🟠 **Lapsed Buyers** | 39,301 | 389 | 103 |
+
+> **Note:** about 96% of customers ordered only once, so frequency is 1 for nearly everyone. The segments are driven by **recency and monetary value**, and the names were chosen to match those profiles.
+
+<div align="center">
+
+<img src="outputs/screenshots/app_segments.png" width="95%" alt="Customer segments page: RFM and KMeans">
+
+</div>
+
+<details>
+<summary><b>More charts from the notebook</b></summary>
+
+<br>
+
+<div align="center">
+
+<img src="outputs/figures/12_kmeans_elbow_silhouette.png" width="80%" alt="KMeans elbow and silhouette">
+
+<img src="outputs/figures/13_rfm_clusters.png" width="80%" alt="RFM clusters">
+
+<img src="outputs/figures/14_segment_distribution.png" width="80%" alt="Segment distribution">
+
+</div>
+
+The full set of charts is in [`outputs/figures/`](outputs/figures/).
+
+</details>
+
+---
+
+## 🤖 Machine Learning Model
+
+**Task:** predict whether a delivered order will receive a low review (1 to 2 stars).
+**Model:** tuned Random Forest (`n_estimators=200`, `min_samples_leaf=4`), chosen after comparing models. Class imbalance was handled with class weights, and the split is stratified (77,599 train / 19,400 test rows).
+
+| Metric | Value |
+|---|---:|
+| Accuracy | 0.848 |
+| Precision | 0.420 |
+| Recall | 0.507 |
+| F1-score | 0.460 |
+| ROC-AUC | 0.766 |
+
+- **Most important feature:** `estimated_vs_actual_delay_days` (importance 0.182). Delay relative to the promised date matters more than raw delivery time.
+- Only about 12.7% of orders are low reviews, so **accuracy alone is misleading**. Precision, recall, F1 and ROC-AUC are the metrics to read.
+- This is a **post-delivery** model: it uses information known once an order has been delivered (such as the delay). It is useful for flagging orders for follow-up, not for predicting before shipping.
+- Performance is **moderate**, not production-grade.
+
+---
+
+## 💡 Business Recommendations
+
+1. **Fix delivery estimates, not just speed.** Delay versus the promised date is the strongest signal of a bad review.
+2. **Focus on slow regions.** Long delivery times in states such as RR hurt experience and reviews.
+3. **Trigger proactive outreach** (apology, discount, support message) for orders flagged as likely low reviews.
+4. **Run win-back campaigns for Lapsed Buyers**, the large group of one-time customers who have not returned in about a year.
+5. **Plan inventory and logistics for Q4.** Peak demand in November strains delivery, which can lead to more late orders.
+
+---
+
+## 🖥 Streamlit App
+
+**🔗 [Open the live app](https://bank-deposit-prediction-t7rvzukgnrhlewkzl46dyy.streamlit.app/)**
+
+| Page | What it shows |
+|---|---|
+| **Overview** | KPI cards (revenue, orders, average review, late %, delivery days) with filters for year, state and category |
+| **Charts** | Revenue trend, top categories, delivery by state, review distribution |
+| **Customer Segments** | RFM cluster summary and charts |
+| **Prediction** | Enter order details and get a low-review probability |
+
+Run it locally:
+
 ```bash
 streamlit run app.py
 ```
-Opens at `http://localhost:8501`  
-**Requires:** `data/delivered.csv`, `data/rfm_segments.csv`,
-`data/metrics_fg.json`, `models/best_model.joblib`
+
+<div align="center">
+
+**Overview: KPI cards, review distribution and payment mix**
+
+<img src="outputs/screenshots/app_overview.png" width="95%" alt="Overview page">
+
+<br><br>
+
+**Prediction: a low-risk and a high-risk example**
+
+<img src="outputs/screenshots/app_prediction.png" width="95%" alt="Prediction page, low-risk example">
+
+<br>
+
+<img src="outputs/screenshots/app_prediction_high_risk.png" width="60%" alt="Prediction page, high-risk example">
+
+</div>
 
 ---
 
-## Screenshots
+## 🛠 Tech Stack
 
-> **[Add Streamlit app screenshots here]**
+| Area | Tools |
+|---|---|
+| Language | Python 3.11 |
+| Data handling | pandas, NumPy |
+| Visualisation | Matplotlib, Seaborn, Plotly |
+| Statistics | SciPy |
+| Machine learning | scikit-learn (pipelines, Random Forest, KMeans) |
+| App | Streamlit |
+| Reporting | python-docx |
+| Development | Jupyter Notebook, IBM Bob AI assistant |
 
----
-
-## Future Improvements
-
-1. NLP sentiment analysis on `review_comment_message`
-2. Real-time prediction REST API (FastAPI)
-3. Demand forecasting per category (Prophet / ARIMA)
-4. Geo-spatial delivery-delay heatmaps using the geolocation table
-5. Advanced class-imbalance handling (SMOTE + Tomek Links + calibrated probabilities)
-
----
-
-## Author
-
-**Siddu Varikuppala**  
-AICTE | IBM SkillsBuild Data Analytics with AI Internship 2026
+Exact versions are pinned in [`requirements.txt`](requirements.txt).
 
 ---
 
-## Acknowledgements
+## 📁 Project Structure
 
-- **AICTE** and **IBM SkillsBuild** for the internship programme
-- **BharatCares** for programme coordination
-- **Olist** and **Kaggle** for the open dataset
-- **IBM Bob** — AI coding assistant used for script development, debugging, app and report generation
+```
+olist-ecommerce-analytics/
+├── Siddu_Varikuppala_OlistEcommerceAnalysis.ipynb   # Full analysis notebook
+├── Siddu_Varikuppala_ProjectReport.docx             # Project report
+├── app.py                                           # Streamlit dashboard
+├── build_report.py                                  # Generates the .docx report
+├── requirements.txt                                 # Python dependencies
+├── README.md
+├── assets/                                          # README banner and preview
+├── outputs/
+│   ├── figures/                                     # Charts saved from the analysis
+│   └── screenshots/                                 # App screenshots
+└── app_data/                                        # Compressed data + model used by the app
+```
+
+---
+
+## ⚙️ Setup & Run
+
+**1. Clone the repository**
+
+```bash
+git clone https://github.com/sidducv0528/olist-ecommerce-analytics.git
+cd olist-ecommerce-analytics
+```
+
+**2. Create a virtual environment and install dependencies** (Python 3.11 recommended)
+
+```bash
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # macOS / Linux
+pip install -r requirements.txt
+```
+
+**3. Download the dataset**
+
+Download it from [Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce), unzip it, and place the CSV files in a folder named `data/` in the project root.
+
+**4. Run the notebook**
+
+```bash
+jupyter notebook Siddu_Varikuppala_OlistEcommerceAnalysis.ipynb
+```
+
+Choose **Kernel > Restart & Run All**.
+
+**5. Run the app**
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## ⚠️ Limitations
+
+- **Moderate model performance** (F1 = 0.46, ROC-AUC = 0.77): useful for flagging risk, not for making automatic decisions.
+- **Post-delivery model:** it cannot predict a bad review before the order ships.
+- **One-time customers dominate** (about 96%), so RFM segmentation relies on recency and spend rather than purchase frequency.
+- **Association, not causation:** late delivery is strongly linked to low reviews, but other factors also influence ratings.
+- **Historical data:** the data covers 2016 to 2018 in Brazil, so patterns may not carry over to other markets or years.
+
+---
+
+## 👤 Author
+
+**Siddu Varikuppala**
+B.Sc. (Honours) Mathematics, Statistics & Data Science, Hyderabad, India
+GitHub: [@sidducv0528](https://github.com/sidducv0528)
+
+### 🙏 Acknowledgements
+
+- **AICTE** and **IBM SkillsBuild**, through **BharatCares**, for the Data Analytics with AI internship
+- **Olist** and **Kaggle** for the public dataset
+- **IBM Bob** AI assistant, used during development
+
+---
+
+<div align="center">
+
+⭐ If you found this project useful, consider giving it a star.
+
+</div>
